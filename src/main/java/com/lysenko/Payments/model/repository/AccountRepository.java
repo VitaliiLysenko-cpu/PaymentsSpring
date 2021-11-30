@@ -12,5 +12,5 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     Page<Account> findAccountsByUserId(int userId, Pageable pageable);
     Account findAccountById(int id);
     List<Account> findAllByUserId(int id);
-    List<Account> findAccountByStatus(Status status);
+    List<Account> findAccountByUserIdAndStatus(int userId,Status status);
 }

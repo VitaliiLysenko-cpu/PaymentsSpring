@@ -23,6 +23,10 @@
 </head>
 <body>
 <jsp:include page="${pageContext.request.contextPath}/WEB-INF/views/header.jsp"/>
+<br>
+<a href="${pageContext.request.contextPath}/add_account">
+    <f:message key="addAccount"/></a>
+<br>
 <h4><f:message key="accounts_information"/></h4>
 <table id="table-accounts" class="table" style="width: 50%">
     <thead>
@@ -63,7 +67,7 @@
             <td>
                 <c:choose>
                     <c:when test="${account.getStatus() == Status.OPEN}">
-                        <a href="${pageContext.request.contextPath}/account?id=${account.getId()}&page=1">${account.getName()}</a>
+                        <a href="${pageContext.request.contextPath}/account?id=${account.getId()}">${account.getName()}</a>
                     </c:when>
                     <c:otherwise>
                         ${account.getName()}

@@ -6,6 +6,7 @@ import com.lysenko.Payments.model.entity.card.Card;
 import com.lysenko.Payments.model.entity.payment.Payment;
 import com.lysenko.Payments.model.entity.user.User;
 import com.lysenko.Payments.model.repository.*;
+import com.lysenko.Payments.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ public class UserController {
     PaymentRepository paymentRepository;
     @Autowired
     RequestUnblockRepository requestUnblockRepository;
+    @Autowired
+    UserService userService;
 
     @GetMapping("/user")
     public String getUserPage(Model model,
@@ -55,9 +58,9 @@ public class UserController {
         String sortOrder = sortOrderOptional.orElse("DESC");
 
         final PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, Sort.Direction.fromString(sortOrder), sortBy);
-        final Page<Account> pageResult = accountRepository.findAccountsByUserId(user.getUserId(), pageRequest);
-        final List<Account> accounts = pageResult.getContent();
-        final int numberOfPages = pageResult.getTotalPages();
+        final Page<Account> accountPage = accountRepository.findAccountsByUserId(user.getUserId(), pageRequest);
+        final List<Account> accounts = accountPage.getContent();
+        final int numberOfPages = accountPage.getTotalPages();
         model.addAttribute("accounts", accounts);
         model.addAttribute("numberOfPages", numberOfPages);
         model.addAttribute("page", page);
@@ -68,11 +71,26 @@ public class UserController {
     }
 
     @GetMapping("/account")
-    public String getAccountPage(Model model, @RequestParam("id") int id, @RequestParam("page") int page) {
+    public String getAccountPage(Model model, @RequestParam("id") int id,
+                                 @RequestParam("page") Optional<Integer> pageOptional,
+                                 @RequestParam("sortOrder") Optional<String> sortOrderOptional,
+                                 @RequestParam("sortBy") Optional<String> sortByOptional) {
+        int page = pageOptional.orElse(0);
+        String sortBy = sortByOptional.orElse("id");
+        String sortOrder = sortOrderOptional.orElse("DESC");
+
         final List<Card> card = cardRepository.findCardByAccountId(id);
         model.addAttribute("cards", card);
-        final List<Payment> payments = paymentRepository.findPaymentsByAccountId(id);
+        final PageRequest pageRequest = PageRequest.of(page,PAGE_SIZE,Sort.Direction.fromString(sortOrder), sortBy);
+        final Page<Payment> paymentPage = paymentRepository.findPaymentsByAccountId(id, pageRequest);
+        final List<Payment> payments = paymentPage.getContent();
+        final int numberOfPages = paymentPage.getTotalPages();
         model.addAttribute("payments", payments);
+        model.addAttribute("id",id);
+        model.addAttribute("page", page);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortOrder",sortOrder);
+        model.addAttribute("numberOfPages", numberOfPages);
         final Double balance = accountRepository.findAccountById(id).getBalance();
         model.addAttribute("balance", balance);
         return "account";
@@ -83,13 +101,25 @@ public class UserController {
         Account account = accountRepository.findAccountById(id);
         account.setBalance(account.getBalance() + total);
         accountRepository.save(account);
-        return "redirect:/account?page=1&id=" + id;
+        return "redirect:/account?id=" + id;
+    }
+
+    @GetMapping("/add_account")
+    public String addNewUserAccount(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        final UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        User user = userRepository.findUserByEmail(userDetails.getUsername());
+        userService.createNewAccount(user.getUserId());
+        return "redirect:/user";
     }
 
     @GetMapping("/payment/new")
     public String newPayment(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        final UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        User user = userRepository.findUserByEmail(userDetails.getUsername());
         log.debug("try to get accounts where status is OPEN ");
-        List<Account> accounts = accountRepository.findAccountByStatus(Status.OPEN);
+        List<Account> accounts = accountRepository.findAccountByUserIdAndStatus(user.getUserId(),Status.OPEN);
         log.debug("accounts: " + accounts);
         model.addAttribute("accounts", accounts);
         return "new";
@@ -99,10 +129,11 @@ public class UserController {
     public String createPayment(@RequestParam("total") double total, @RequestParam("accountId") int id) {
         Date date = new Date();
         Account account = accountRepository.getById(id);
-        if (account.getBalance() > total) {
+        if (account.getBalance() >= total) {
             account.setBalance(account.getBalance() - total);
             paymentRepository.createNewPayment(total, id, date);
-            return "redirect:/account?page=1&id=" + id;
+
+            return "redirect:/account?page=0&id=" + id;
         } else {
             return "redirect:/payment/new?error=true";
         }

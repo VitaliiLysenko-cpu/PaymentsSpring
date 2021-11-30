@@ -33,7 +33,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("admin", "customer", "customer-account/block", "customer-account/unblock",
                         "customer/block", "customer/unblock", "unblock_account", "request_unblock_account").hasRole("ADMIN")
-                .antMatchers("user", "account", "top_up", "payment/create", "payment/new", "block", "sent-request").hasRole("USER")
+                .antMatchers("user", "account", "top_up", "payment/create", "payment/new", "block",
+                        "sent-request", "add_account").hasRole("USER")
                 .antMatchers("/","registration").permitAll()
                 .and()
                 .formLogin()
