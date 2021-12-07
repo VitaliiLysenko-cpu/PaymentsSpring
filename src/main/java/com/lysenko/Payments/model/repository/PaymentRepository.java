@@ -10,12 +10,12 @@ import org.springframework.data.jpa.repository.Query;
 import javax.transaction.Transactional;
 import java.util.Date;
 
-public interface PaymentRepository extends JpaRepository<Payment,Integer> {
-    Page<Payment> findPaymentsByAccountId (Integer accountId, Pageable pageable);
+public interface PaymentRepository extends JpaRepository<Payment, Integer> {
+    Page<Payment> findPaymentsByAccountId(Integer accountId, Pageable pageable);
 
     @Modifying
     @Transactional
     @Query(value = "INSERT INTO payment (amount,account_id,date) VALUES (?,?,?)", nativeQuery = true)
-    void createNewPayment(double amount, int account_id,Date date);
+    void createNewPayment(double amount, int account_id, Date date);
 }
 

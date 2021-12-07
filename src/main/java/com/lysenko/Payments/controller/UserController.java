@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
@@ -45,6 +46,7 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/user")
+
     public String getUserPage(Model model,
                               @RequestParam("page") Optional<Integer> pageOptional,
                               @RequestParam("sortBy") Optional<String> sortByOptional,
@@ -81,15 +83,15 @@ public class UserController {
 
         final List<Card> card = cardRepository.findCardByAccountId(id);
         model.addAttribute("cards", card);
-        final PageRequest pageRequest = PageRequest.of(page,PAGE_SIZE,Sort.Direction.fromString(sortOrder), sortBy);
+        final PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, Sort.Direction.fromString(sortOrder), sortBy);
         final Page<Payment> paymentPage = paymentRepository.findPaymentsByAccountId(id, pageRequest);
         final List<Payment> payments = paymentPage.getContent();
         final int numberOfPages = paymentPage.getTotalPages();
         model.addAttribute("payments", payments);
-        model.addAttribute("id",id);
+        model.addAttribute("id", id);
         model.addAttribute("page", page);
         model.addAttribute("sortBy", sortBy);
-        model.addAttribute("sortOrder",sortOrder);
+        model.addAttribute("sortOrder", sortOrder);
         model.addAttribute("numberOfPages", numberOfPages);
         final Double balance = accountRepository.findAccountById(id).getBalance();
         model.addAttribute("balance", balance);
@@ -105,7 +107,7 @@ public class UserController {
     }
 
     @GetMapping("/add_account")
-    public String addNewUserAccount(){
+    public String addNewUserAccount() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final UserDetails userDetails = (UserDetails) auth.getPrincipal();
         User user = userRepository.findUserByEmail(userDetails.getUsername());
@@ -119,7 +121,7 @@ public class UserController {
         final UserDetails userDetails = (UserDetails) auth.getPrincipal();
         User user = userRepository.findUserByEmail(userDetails.getUsername());
         log.debug("try to get accounts where status is OPEN ");
-        List<Account> accounts = accountRepository.findAccountByUserIdAndStatus(user.getUserId(),Status.OPEN);
+        List<Account> accounts = accountRepository.findAccountByUserIdAndStatus(user.getUserId(), Status.OPEN);
         log.debug("accounts: " + accounts);
         model.addAttribute("accounts", accounts);
         return "new";

@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+
 @Entity
 @Table(name = "request_unblock")
 @Data

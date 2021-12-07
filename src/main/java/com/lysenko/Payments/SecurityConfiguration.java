@@ -35,10 +35,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "customer/block", "customer/unblock", "unblock_account", "request_unblock_account").hasRole("ADMIN")
                 .antMatchers("user", "account", "top_up", "payment/create", "payment/new", "block",
                         "sent-request", "add_account").hasRole("USER")
-                .antMatchers("/","registration").permitAll()
+                .antMatchers("/", "registration").permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/")
+                .failureUrl("/?error=errorLogin")
                 .loginProcessingUrl("/login")
                 .successHandler(authSuccessHandler)
                 .and()

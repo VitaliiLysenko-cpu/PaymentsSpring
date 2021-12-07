@@ -5,16 +5,15 @@ import com.lysenko.Payments.model.entity.account.Status;
 import com.lysenko.Payments.model.entity.card.Card;
 import com.lysenko.Payments.model.repository.AccountRepository;
 import com.lysenko.Payments.model.repository.CardRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
+@Slf4j
 @Service
 public class UserService {
-    private static final Logger log = LoggerFactory.getLogger(com.lysenko.Payments.service.UserService.class);
     final AccountRepository accountRepository;
     final CardRepository cardRepository;
 

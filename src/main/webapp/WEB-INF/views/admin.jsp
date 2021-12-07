@@ -4,7 +4,8 @@
 <%@ taglib prefix="f" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <f:setLocale value="${sessionScope.lang}"/>
 <f:setBundle basename="locale"/>
-<html>
+<!DOCTYPE html>
+<html lang="${sessionScope.lang}">
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -19,8 +20,8 @@
 </head>
 <jsp:include page="${pageContext.request.contextPath}/WEB-INF/views/header_admin.jsp"/>
 <body>
-<h4><f:message key="accounts_information"/> </h4>
 <table id="table-accounts" class="table" style="width:50%">
+    <caption><f:message key="accounts_information"/></caption>
     <thead>
     <tr>
         <th scope="col"><f:message key="user"/></th>

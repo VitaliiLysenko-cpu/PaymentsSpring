@@ -1,6 +1,7 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="f" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <f:setLocale value="${sessionScope.lang}"/>
 <f:setBundle basename="locale"/>
 <html>
@@ -12,6 +13,12 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
+<jsp:include page="${pageContext.request.contextPath}/WEB-INF/views/header.jsp"/>
+<c:if test="${pageContext.request.getParameter('error') == 'errorLogin'}">
+    <div class="alert alert-danger" role="alert" style="width:50%">
+        <f:message key="the_account_was_not_found"/>
+    </div>
+</c:if>
 <div class="container">
     <form class="form-horizontal needs-validation" id="loginform" role="form" method="post" style="width:100%"
           action="${pageContext.request.contextPath}/login">

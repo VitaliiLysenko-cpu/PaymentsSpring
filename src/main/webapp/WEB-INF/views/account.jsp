@@ -3,7 +3,8 @@
 <%@ taglib prefix="f" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <f:setLocale value="${sessionScope.lang}"/>
 <f:setBundle basename="locale"/>
-<html>
+<!DOCTYPE html>
+<html lang="${sessionScope.lang}">
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -30,8 +31,8 @@
     <input type="submit" value="<f:message key="topUp"/>" class="btn btn-primary">
 </form>
 <br>
-<h4><f:message key="card_information"/></h4>
 <table id="table-accounts" class="table" style="width: 50%">
+    <caption><f:message key="card_information"/></caption>
     <thead>
     <tr>
         <th scope="col"><f:message key="cardNumber"/></th>
@@ -42,16 +43,16 @@
     <tbody>
     <c:forEach items="${cards}" var="card">
         <tr>
-            <td>${card.getNumber()}</td>
-            <td>${card.getExpiration()}</td>
-            <td>${card.getCvc()}</td>
+            <td>${card.number}</td>
+            <td>${card.expiration}</td>
+            <td>${card.cvc}</td>
         </tr>
     </c:forEach>
     </tbody>
 </table>
 <br>
-<h4><f:message key="payments_information"/></h4>
 <table id="table-payments" class="table" style="width: 50%">
+    <caption><f:message key="payments_information"/></caption>
     <thead>
     <tr>
         <th scope="col">
@@ -72,11 +73,11 @@
             <c:choose>
                 <c:when test="${sortOrder.equalsIgnoreCase(\"DESC\")}">
                     <a href="${pageContext.request.contextPath}/account?sortBy=date&page=${page}&id=${id}&sortOrder=ASC">
-                        <f:message key="dataCreated"/></a>
+                        <f:message key="dateCreated"/></a>
                 </c:when>
                 <c:otherwise>
                     <a href="${pageContext.request.contextPath}/account?sortBy=date&page=${page}&id=${id}&sortOrder=DESC">
-                        <f:message key="dataCreated"/></a>
+                        <f:message key="dateCreated"/></a>
                 </c:otherwise>
             </c:choose>
         </th>
@@ -85,10 +86,10 @@
     <tbody>
     <c:forEach items="${payments}" var="payment">
         <tr>
-            <td>${payment.getId()}</td>
-            <td>${payment.getAmount()}</td>
-            <td>${payment.getStatus()}</td>
-            <td>${payment.getDateCreated()}</td>
+            <td>${payment.id}</td>
+            <td>${payment.amount}</td>
+            <td>${payment.status}</td>
+            <td>${payment.dateCreated}</td>
         </tr>
     </c:forEach>
     </tbody>

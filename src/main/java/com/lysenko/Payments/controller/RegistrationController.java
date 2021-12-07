@@ -5,17 +5,16 @@ import com.lysenko.Payments.model.entity.user.User;
 import com.lysenko.Payments.model.entity.user.UserStatus;
 import com.lysenko.Payments.model.repository.UserRepository;
 import com.lysenko.Payments.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@Slf4j
 @Controller
 public class RegistrationController {
-    private static final Logger log = LoggerFactory.getLogger(com.lysenko.Payments.controller.RegistrationController.class);
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -44,5 +43,4 @@ public class RegistrationController {
         userService.createNewAccount(user.getUserId());
         return "redirect:/";
     }
-
 }

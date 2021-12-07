@@ -1,7 +1,7 @@
 package com.lysenko.Payments.model;
 
-import com.lysenko.Payments.model.repository.UserRepository;
 import com.lysenko.Payments.model.entity.user.User;
+import com.lysenko.Payments.model.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

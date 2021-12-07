@@ -39,7 +39,6 @@ public class AdminController {
     public String getUserPage(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final UserDetails userDetails = (UserDetails) auth.getPrincipal();
-        User admin = userRepository.findUserByEmail(userDetails.getUsername());
         final List<User> users = userRepository.findAllByRole(Role.USER);
         model.addAttribute("users", users);
         log.debug("Return admin.jsp");
@@ -96,11 +95,12 @@ public class AdminController {
         model.addAttribute("requests", requests);
         return "unblock_account";
     }
+
     @GetMapping("/request_unblock_account")
     public String toUnblockRequestAccount(@RequestParam("id") int accountId) {
         Account account = accountRepository.findAccountById(accountId);
         List<RequestUnblock> requestUnblocks = requestUnblockRepository.findRequestUnblockByAccountId(accountId);
-        for (RequestUnblock requestUnblock: requestUnblocks) {
+        for (RequestUnblock requestUnblock : requestUnblocks) {
             requestUnblock.setStatusRequest(StatusRequest.DONE);
             requestUnblockRepository.save(requestUnblock);
         }
